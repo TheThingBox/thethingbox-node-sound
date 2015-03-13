@@ -10,4 +10,4 @@ This node is a mpg321 player for node-RED.
 When an input event occurs in the node, the music starts.
 
 ###Stop
-Send o the sound node an empty msg.sound value.
+Send to the sound node an empty msg.sound value.
