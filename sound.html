@@ -1,0 +1,56 @@
+<script type="text/x-red" data-template-name="sound">
+    <div class="form-row">
+        <label for="node-input-sound"><i class="fa fa-file"></i>MP3 file</label>
+        <input type="text" id="node-input-sound" placeholder="sound">
+    </div>
+	<div class="form-row">
+        <label for="node-input-intensity"><i class="fa fa-tag"></i>Intensity</label>
+        <input type="text" id="node-input-intensity" style = "width: 10%;" placeholder = "0" value="80">
+    </div>
+	<div class = "form-row" id = "slider" style = "width: 70%;display: block; margin-left: auto;  margin-right: auto;"></div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i>Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+<script type="text/x-red" data-help-name="sound">
+    <p>Calls out to a linux mpg321 command that will launch the mp3 file path given in payload.<br/></p>
+	<p> You can dynamically change the file with <b>msg.sound</b> and the volume with the <b>msg.volume</b> property<p>
+	<p>	START - launch an input event to launch the wanted mp3 file<p>
+	<p> STOP - launch an input event with an <b>empty msg.sound</b> value<p>
+    <p>Provides 3 outputs... stdout, stderr, and return code.</p>
+</script>
+<script type="text/javascript">
+    RED.nodes.registerType('sound',{
+        category: 'advanced-function',
+        color:"#ffffff",
+        defaults: {
+            sound: {value:""},
+			intensity: {value:"",validate:RED.validators.number()},
+            name: {value:""}
+        },
+        inputs:1,
+        outputs:3,
+        icon: "icon.png",
+        align: "right",
+        label: function() {
+            return this.name||this.sound||"sound";
+        },
+        labelStyle: function() {
+            return this.name?"sound":"";
+        },
+		oneditprepare:function(){
+			console.log("oneditprepare : " + $("#node-input-intensity").val());
+			$("#slider").slider({
+				create: function(event, ui){
+					$("#slider").slider('value',$("#node-input-intensity").val());
+				},
+				min:0,
+				max:100,
+				slide: function( event, ui ) {
+					$("#node-input-intensity").val(ui.value);
+				}
+			});
+		}
+    });
+</script>
