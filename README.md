@@ -1,8 +1,13 @@
 # thethingbox-node-sound
 
+## Installation
+
+	$ sudo apt-get install libasound2-dev
+	$ npm install git+https://github.com/TheThingBox/player.git
+
 ## Presentation
 
-This node is a mpg321 player for node-RED. 
+This node play mp3 files online or local. It can play mp3 streams too.
 
 ## Usages
 
