@@ -28,29 +28,21 @@ module.exports = function(RED) {
         var node = this;
 
         this.on('input', function(msg) {
-            if(msg.command && msg.command === "stop" && node.playing) {
+            if(msg.intent || msg.intent == 0) {
+                if(msg.intent == 1) {
+                    startPlayer(node, msg);
+                    node.send([msg, null]);
+                } else if(msg.intent == 0) {
+                    stopPlayer(node);
+                    node.lastmsgreceived = null;
+                    node.send([msg,null]);
+                }
+            } else if(msg.command && msg.command === "stop" && node.playing) {
                 stopPlayer(node);
                 node.lastmsgreceived = null;
                 node.send([msg,null]);
             } else {
-                node.lastmsgreceived = msg;
-                if(msg.sound) {
-                    createPlayer(node, msg.sound);
-                } else if(node.player.playList()[0] != node.sound){
-                    createPlayer(node, node.sound);
-                }
-                if(node.playing){
-                    stopPlayer(node);
-                }
-                node.player.play(function(err) {
-                    if(err) {
-                        node.warn(err);
-                    } else {
-                        node.send([null, msg]);
-                    }
-                    node.playing = false;
-                });
-                node.playing = true;
+                startPlayer(node, msg);
                 node.send([msg, null]);
             }
         });
@@ -75,6 +67,27 @@ module.exports = function(RED) {
     function stopPlayer(node) {
         node.player.stop();
         node.playing = false;
+    }
+
+    function startPlayer(node, msg) {
+        node.lastmsgreceived = msg;
+        if(msg.sound && node.player.playList()[0] != msg.sound) {
+            createPlayer(node, msg.sound);
+        } else if(node.player.playList()[0] != node.sound){
+            createPlayer(node, node.sound);
+        }
+        if(node.playing){
+            stopPlayer(node);
+        }
+        node.player.play(function(err) {
+            if(err) {
+                node.warn(err);
+            } else {
+                node.send([null, msg]);
+            }
+            node.playing = false;
+        });
+        node.playing = true;
     }
 
 }
