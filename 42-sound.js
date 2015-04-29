@@ -18,6 +18,8 @@ module.exports = function(RED) {
     "use strict";
     var Player = require("player");
 
+    var VOLUME_INCREMENT_STEP = 5;
+
     function Sound(n) {
         RED.nodes.createNode(this, n);
 
@@ -29,14 +31,22 @@ module.exports = function(RED) {
 
         this.on('input', function(msg) {
             if(msg.intent || msg.intent == 0) {
-                if(msg.intent == 1) {
+                if(msg.intent == 1) { // open
                     startPlayer(node, msg);
                     node.send([msg, null]);
-                } else if(msg.intent == 0) {
+                } else if(msg.intent == 0) { // close
                     stopPlayer(node);
                     node.lastmsgreceived = null;
                     node.send([msg,null]);
+                } else if(msg.intent == 2) { // more
+                    var vol = node.player.getVolume();
+                    node.player.setVolume(vol + VOLUME_INCREMENT_STEP);
+                } else if(msg.intent == 3) { // less
+                    var vol = node.player.getVolume();
+                    node.player.setVolume(vol - VOLUME_INCREMENT_STEP);
                 }
+            } else if(msg.intensity) {
+                node.player.setVolume(msg.intensity);
             } else if(msg.command && msg.command === "stop" && node.playing) {
                 stopPlayer(node);
                 node.lastmsgreceived = null;
