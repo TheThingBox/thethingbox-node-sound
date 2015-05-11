@@ -1,0 +1,9 @@
+{
+  "name": "sound",
+  "version": "1.0.0",
+  "homepage": "http://thethingbox.io/",
+  "private": true,
+  "dependencies": {
+    "player": "git+https://github.com/TheThingBox/player.git"
+  }
+}
