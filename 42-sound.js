@@ -36,7 +36,6 @@ module.exports = function(RED) {
                     node.send([msg, null]);
                 } else if(msg.intent == 0) { // close
                     stopPlayer(node);
-                    node.lastmsgreceived = null;
                     node.send([msg,null]);
                 } else if(msg.intent == 2) { // more
                     var vol = node.player.getVolume();
@@ -49,7 +48,6 @@ module.exports = function(RED) {
                 node.player.setVolume(msg.intensity);
             } else if(msg.command && msg.command === "stop" && node.playing) {
                 stopPlayer(node);
-                node.lastmsgreceived = null;
                 node.send([msg,null]);
             } else {
                 startPlayer(node, msg);
@@ -75,12 +73,12 @@ module.exports = function(RED) {
     }
 
     function stopPlayer(node) {
+        if(!node.playing) return;
         node.player.stop();
         node.playing = false;
     }
 
     function startPlayer(node, msg) {
-        node.lastmsgreceived = msg;
         if(msg.sound && node.player.playList()[0] != msg.sound) {
             createPlayer(node, msg.sound);
         } else if(node.player.playList()[0] != node.sound){
