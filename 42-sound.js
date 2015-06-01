@@ -72,11 +72,22 @@ module.exports = function(RED) {
     }
 
     function startPlayer(node, msg) {
-        if(msg.sound && node.player.playList()[0] != msg.sound) {
-            createPlayer(node, msg.sound);
-        } else if(node.player.playList()[0] != node.sound){
-            createPlayer(node, node.sound);
+		
+		var toplay =  msg.sound || msg.value || msg.payload;
+		
+		if(toplay == "")
+			toplay = node.sound;
+		
+		if(toplay.charAt(0) != "/")
+			toplay = "/root/thethingbox/data/sounds/" + toplay;
+
+		if(toplay.indexOf(".") == -1)
+			toplay += ".mp3";
+		
+        if(toplay && node.player.playList()[0] != toplay) {
+            createPlayer(node, toplay);
         }
+		
         if(node.playing){
             stopPlayer(node);
         }
