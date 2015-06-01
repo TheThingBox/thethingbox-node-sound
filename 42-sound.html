@@ -1,5 +1,5 @@
 <!--
- 	Copyright © 2015 Digital Airways (www.DigitalAirways.com)
+ 	Copyright Â© 2015 Digital Airways (www.DigitalAirways.com)
 	This work is free. You can redistribute it and/or modify it under the
 	terms of the Do What The Fuck You Want To Public License, Version 2,
 	as published by Sam Hocevar. 
@@ -19,11 +19,18 @@
 </script>
 
 <script type="text/x-red" data-help-name="sound">
-   <p>Play mp3 !</p>
-   <p>Play the mp3 file or url specified into <b>Sound</b>.</p>
-   <p>This parameter can be override by <b>msg.sound</b>.</p>
-   <p>You can stop the current song with <b>msg.command</b> = <code>"stop"</code></p>
-   <p>The <b>first</b> output is for when the sound is played. The <b>second</b> is for when the sound is ended.</p>
+   <h3>Play mp3 !</h3>
+   <p>Play the mp3 file found on the incomming flow.</p>
+   <p>The first output is for when the sound is played. The second is for when the sound is ended.</p>
+   
+   <h3>Advanced</h3>
+   <p>The node takes the mp3 URL in msg.sound || msg.value || msg.payload that override any value in the node editable form, if defined.</p>
+   <p>It understands the intents "Open", "Close", "More", "Less", "Intensity".</p>
+   <p>It understand an http URL as well as complete path on the Thingbox (beginning with "/") as well as a relativ path. 
+   In this case, the path is relativ to /root/thethingbox/data/sounds that already contains sounds named from beep1.mp3 to beep50.mp3.</p>
+   <p>If no dot is found in the path, ".mp3" is added at the end of the name of the sound.</p>   
+   <p>Based on (forked) lib https://github.com/turingou/player.</p>
+
 </script>
 
 <script type="text/javascript">
