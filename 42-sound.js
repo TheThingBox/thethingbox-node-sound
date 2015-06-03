@@ -78,7 +78,7 @@ module.exports = function(RED) {
 		if(toplay == "")
 			toplay = node.sound;
 		
-		if(toplay.charAt(0) != "/")
+		if(toplay.charAt(0) != "/" && toplay.indexOf("http://") != 0)
 			toplay = "/root/thethingbox/data/sounds/" + toplay;
 
 		if(toplay.indexOf(".") == -1)
