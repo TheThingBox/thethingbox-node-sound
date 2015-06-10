@@ -26,6 +26,7 @@ module.exports = function(RED) {
             if(msg.intent || msg.intent == 0) {
                 if(msg.intent == 1) { // open
                     startPlayer(node, msg);
+                    msg.payload = n.name;
                     node.send([msg, null]);
                 } else if(msg.intent == 0) { // close
                     stopPlayer(node);
