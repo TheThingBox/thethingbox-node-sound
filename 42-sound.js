@@ -74,9 +74,9 @@ module.exports = function(RED) {
 
     function startPlayer(node, msg) {
 		
-		var toplay =  msg.sound || msg.value || msg.payload;
+		var toplay =  msg.sound || msg.value || msg.payload || "";
 		
-		if(toplay == "")
+		if(toplay == "" || typeof toplay != "String")
 			toplay = node.sound;
 		
 		if(toplay.charAt(0) != "/" && toplay.indexOf("http://") != 0)
