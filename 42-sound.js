@@ -11,7 +11,7 @@ module.exports = function(RED) {
     "use strict";
     var Player = require("player");
 
-    var VOLUME_INCREMENT_STEP = 5;
+    var VOLUME_INCREMENT_STEP = 5/100;
 
     function Sound(n) {
         RED.nodes.createNode(this, n);
@@ -21,6 +21,7 @@ module.exports = function(RED) {
         createPlayer(this, this.sound);
 
         var node = this;
+        node.messageOnFinish = {};
 
         this.on('input', function(msg) {
             if(msg.intent || msg.intent == 0) {
@@ -39,7 +40,7 @@ module.exports = function(RED) {
                     node.player.setVolume(vol - VOLUME_INCREMENT_STEP);
                 }
             } else if(msg.intensity) {
-                node.player.setVolume(msg.intensity);
+                node.player.setVolume(Number(msg.intensity)/100);
             } else if(msg.command && msg.command === "stop" && node.playing) {
                 stopPlayer(node);
                 node.send([msg,null]);
@@ -57,12 +58,14 @@ module.exports = function(RED) {
     RED.nodes.registerType("sound", Sound);
 
     function createPlayer(node, sound) {
-        if(node.playing) {
-            stopPlayer(node);
-        }
-        node.player = new Player([sound]);
+        stopPlayer(node);
+        node.player = new Player([sound],{downloads:"/root/userdir/"});
         node.player.on("error", function(err) {
             node.warn(err);
+        });
+        node.player.on("finish", function(current) {
+            node.send([null, node.messageOnFinish]);
+            node.playing = false;
         });
     }
 
@@ -76,7 +79,7 @@ module.exports = function(RED) {
 		
 		var toplay =  msg.sound || msg.value || msg.payload || "";
 		
-		if(toplay == "" || typeof toplay != "String")
+		if(toplay == "" || typeof toplay != "string")
 			toplay = node.sound;
 		
 		if(toplay.charAt(0) != "/" && toplay.indexOf("http://") != 0)
@@ -84,23 +87,18 @@ module.exports = function(RED) {
 
 		if(toplay.indexOf(".") == -1)
 			toplay += ".mp3";
-		
-        if(toplay && node.player.playList()[0] != toplay) {
+
+        if(toplay && node.player.list[0] != toplay && toplay != "/root/thethingbox/data/sounds/.mp3") {
             createPlayer(node, toplay);
         }
 		
         if(node.playing){
             stopPlayer(node);
         }
-        node.player.play(function(err) {
-            if(err) {
-                node.warn(err);
-            } else {
-                node.send([null, msg]);
-            }
-            node.playing = false;
-        });
+
+        node.player.play();
         node.playing = true;
+        node.messageOnFinish = msg;
     }
 
 }

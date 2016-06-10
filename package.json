@@ -1,7 +1,12 @@
 {
   "name": "sound",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "http://thethingbox.io/",
+  "node-red": {
+      "nodes": {
+          "sound": "42-sound.js"
+      }
+  },
   "private": true,
   "dependencies": {
     "player": "git+https://github.com/TheThingBox/player.git"
